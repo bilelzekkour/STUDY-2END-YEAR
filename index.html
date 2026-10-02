@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f6f0">
+  <meta name="description" content="مساحة محلية خفيفة لمراجعة مقياس المالية العامة.">
+  <title>مَدار — المالية العامة</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">انتقل إلى المحتوى</a>
+  <div class="app-layout">
+    <aside class="sidebar" aria-label="التنقل الرئيسي">
+      <a class="brand" href="#home" data-view="home" aria-label="الرئيسية">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="brand-copy"><strong>مَدار</strong><small>مساحة مراجعتك</small></span>
+      </a>
+
+      <div class="nav-caption">مسار التعلّم</div>
+      <nav class="side-nav" id="side-nav">
+        <button class="nav-item active" type="button" data-view="home"><span class="nav-icon" aria-hidden="true">⌂</span><span>الرئيسية</span></button>
+        <button class="nav-item" type="button" data-view="lessons"><span class="nav-icon" aria-hidden="true">▦</span><span>المحاضرات</span></button>
+        <button class="nav-item" type="button" data-view="cards"><span class="nav-icon" aria-hidden="true">◇</span><span>بطاقات المراجعة</span></button>
+        <button class="nav-item" type="button" data-view="quiz"><span class="nav-icon" aria-hidden="true">◉</span><span>اختبر نفسك</span></button>
+        <button class="nav-item" type="button" data-view="exams"><span class="nav-icon" aria-hidden="true">▤</span><span>نماذج الامتحان</span></button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="side-progress-card">
+          <div class="side-progress-top"><span>تقدّم المقياس</span><strong id="side-progress-label">٠٪</strong></div>
+          <div class="progress-track"><span id="side-progress-bar" style="width:0%"></span></div>
+          <small id="side-progress-note">ابدأ بمحاضرة واحدة اليوم</small>
+        </div>
+        <div class="local-note"><span class="local-dot"></span><span>يعمل محليًا<br><small>لا حساب ولا خدمات خارجية</small></span></div>
+      </div>
+    </aside>
+
+    <div class="main-column">
+      <header class="topbar">
+        <div class="topbar-title">
+          <span class="topbar-kicker">مقياس جامعي</span>
+          <span class="topbar-course">المالية العامة</span>
+        </div>
+        <form class="search-form" id="search-form" role="search">
+          <span class="search-symbol" aria-hidden="true">⌕</span>
+          <input id="search-input" type="search" placeholder="ابحث في الملخصات والمفاهيم…" aria-label="ابحث في المقرر">
+          <button type="submit" aria-label="بحث">بحث</button>
+        </form>
+      </header>
+
+      <main class="main-content" id="main-content" tabindex="-1"></main>
+      <footer class="page-footer">
+        <span>مَدار · مراجعة هادئة وواضحة</span>
+        <span>تُحفظ المتابعة على هذا المتصفح فقط</span>
+      </footer>
+    </div>
+  </div>
+
+  <script src="course-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
