@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f4f6f0">
   <meta name="description" content="مساحة محلية خفيفة لمراجعة مقياس المالية العامة.">
-  <title>مَدار — المالية العامة</title>
+  <title>إدارة المالية — المالية العامة</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,14 +13,14 @@
   <div class="app-layout">
     <aside class="sidebar" aria-label="التنقل الرئيسي">
       <a class="brand" href="#home" data-view="home" aria-label="الرئيسية">
-        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
-        <span class="brand-copy"><strong>مَدار</strong><small>مساحة مراجعتك</small></span>
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" role="presentation"><path d="M7 14h26L20 7 7 14Z"/><path d="M10 17v10M17 17v10M23 17v10M30 17v10M8 29h24M6 33h28"/></svg></span>
+        <span class="brand-copy"><strong>إدارة المالية</strong><small>مالية عامة · دراسة</small></span>
       </a>
 
       <div class="nav-caption">مسار التعلّم</div>
       <nav class="side-nav" id="side-nav">
         <button class="nav-item active" type="button" data-view="home"><span class="nav-icon" aria-hidden="true">⌂</span><span>الرئيسية</span></button>
-        <button class="nav-item" type="button" data-view="lessons"><span class="nav-icon" aria-hidden="true">▦</span><span>المحاضرات</span></button>
+        <button class="nav-item" type="button" data-view="lessons"><span class="nav-icon" aria-hidden="true">▦</span><span>التدريس</span></button>
         <button class="nav-item" type="button" data-view="cards"><span class="nav-icon" aria-hidden="true">◇</span><span>بطاقات المراجعة</span></button>
         <button class="nav-item" type="button" data-view="quiz"><span class="nav-icon" aria-hidden="true">◉</span><span>اختبر نفسك</span></button>
         <button class="nav-item" type="button" data-view="exams"><span class="nav-icon" aria-hidden="true">▤</span><span>نماذج الامتحان</span></button>
@@ -38,9 +38,12 @@
 
     <div class="main-column">
       <header class="topbar">
-        <div class="topbar-title">
-          <span class="topbar-kicker">مقياس جامعي</span>
-          <span class="topbar-course">المالية العامة</span>
+        <div class="topbar-brand">
+          <span class="brand-mark topbar-mark" aria-hidden="true"><svg viewBox="0 0 40 40" role="presentation"><path d="M7 14h26L20 7 7 14Z"/><path d="M10 17v10M17 17v10M23 17v10M30 17v10M8 29h24M6 33h28"/></svg></span>
+          <div class="topbar-title">
+            <span class="topbar-kicker">إدارة المالية</span>
+            <span class="topbar-course">المالية العامة</span>
+          </div>
         </div>
         <form class="search-form" id="search-form" role="search">
           <span class="search-symbol" aria-hidden="true">⌕</span>
@@ -51,13 +54,14 @@
 
       <main class="main-content" id="main-content" tabindex="-1"></main>
       <footer class="page-footer">
-        <span>مَدار · مراجعة هادئة وواضحة</span>
+        <span>إدارة المالية · مراجعة هادئة وواضحة</span>
         <span>تُحفظ المتابعة على هذا المتصفح فقط</span>
       </footer>
     </div>
   </div>
 
   <script src="course-data.js"></script>
+  <script src="teaching-content.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

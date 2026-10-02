@@ -151,7 +151,7 @@
     <div class="content-grid">
       <div class="content-stack">
         <section class="section-block">
-          <div class="section-heading"><div><span class="eyebrow">خريطة المقياس</span><h2>من المفاهيم إلى الميزانية</h2><p>ابدأ بالترتيب، أو اختر المحور الذي تحتاج إلى مراجعته.</p></div><button class="text-button" type="button" data-view="lessons">عرض المحاضرات كاملة ←</button></div>
+          <div class="section-heading"><div><span class="eyebrow">خريطة المقياس</span><h2>من المفاهيم إلى الميزانية</h2><p>ابدأ بالترتيب، أو اختر المحور الذي تحتاج إلى مراجعته.</p></div><button class="text-button" type="button" data-view="lessons">ادخل إلى قسم التدريس ←</button></div>
           <div class="lesson-list">${DATA.lessons.slice(0, 4).map(lessonRow).join('')}</div>
         </section>
         <section class="section-block">
@@ -185,7 +185,7 @@
   }
 
   function renderLessons() {
-    return `<div class="page-heading"><div><span class="eyebrow">خريطة التعلّم</span><h1 class="page-title">محاضرات المقياس</h1><p class="page-lead">ثمانية محاور من مدخل المالية العامة إلى قواعد الميزانية.</p></div>
+    return `<div class="page-heading"><div><span class="eyebrow">شرح وتدريس</span><h1 class="page-title">قسم التدريس</h1><p class="page-lead">اختر محاضرة لشرحها خطوة بخطوة مع أمثلة، نقاط مهمة، ملخص ملوّن وخريطة ذهنية.</p></div>
       <span class="pill">${digits(state.completedLessons.length)} / ${digits(DATA.lessons.length)} مكتملة</span></div>
       <div class="lesson-grid">${DATA.lessons.map((lesson) => `<button class="lesson-card" type="button" data-open-lesson="${lesson.id}">
         <div class="lesson-card-top"><span class="lesson-number">${lesson.number}</span><span class="pill">${escapeHtml(lesson.label)}</span></div>
@@ -199,20 +199,31 @@
     state.lastLessonId = lesson.id;
     saveState();
     const completed = isDone(lesson.id);
-    return `<button class="back-button" type="button" data-action="back-lessons">→ العودة إلى المحاضرات</button>
-      <div class="lesson-detail-head"><span class="lesson-number">${lesson.number}</span><span><span class="eyebrow">${escapeHtml(lesson.label)} · ${escapeHtml(lesson.pages)}</span><h1 class="lesson-detail-title">${escapeHtml(lesson.title)}</h1><p class="lesson-detail-short">${escapeHtml(lesson.short)}</p></span></div>
-      <div class="content-grid">
-        <div class="content-stack">
-          <section class="summary-box"><strong>الخلاصة في دقيقة</strong>${escapeHtml(lesson.summary)}</section>
-          <section class="panel"><div class="section-heading"><div><span class="eyebrow">النقاط الأساسية</span><h2>ما ينبغي أن تتذكره</h2></div></div><ul class="point-list">${lesson.points.map((point) => `<li>${escapeHtml(point)}</li>`).join('')}</ul></section>
-          <section class="panel"><div class="section-heading"><div><span class="eyebrow">مفاهيم مفتاحية</span><h2>تعريفات للمراجعة</h2></div></div><div class="term-list">${lesson.terms.map((term) => `<div class="term-item"><strong>${escapeHtml(term.term)}</strong><p>${escapeHtml(term.meaning)}</p></div>`).join('')}</div></section>
-        </div>
-        <aside class="content-stack side-extras">
-          <section class="panel"><div class="section-heading"><div><span class="eyebrow">تطبيق امتحاني</span><h2>لمحة من النماذج</h2></div></div><div class="exam-hint">${escapeHtml(lesson.examHint)}</div></section>
-          <section class="panel"><div class="section-heading"><div><span class="eyebrow">المصدر</span><h2>ارجع إلى المحاضرة</h2></div></div><p class="page-lead">المرجع هو رقم الصفحة داخل ملف PDF المرفوع.</p><div class="source-line"><span>${escapeHtml(lesson.pages)}</span>${pdfLink(lesson.pdf, 'فتح المحاضرة')}</div></section>
-          <section class="panel"><div class="section-heading"><div><span class="eyebrow">خطوتك التالية</span><h2>ثبّت ما تعلمته</h2></div></div><div class="detail-actions"><button class="btn btn-green" type="button" data-start-cards="lesson" data-lesson-id="${lesson.id}">راجع بطاقات المحور</button><button class="btn btn-outline" type="button" data-start-quiz="${lesson.id}">اختبر هذا المحور</button><button class="btn ${completed ? 'btn-soft' : 'btn-outline'}" type="button" data-action="toggle-complete" data-lesson-id="${lesson.id}">${completed ? '✓ أزل علامة الإكمال' : 'علّم المحور كمكتمل'}</button></div></section>
-        </aside>
-      </div>`;
+    const teaching = (window.TEACHING_DATA || {})[lesson.id] || {
+      opening: lesson.summary,
+      steps: lesson.points.map((text, index) => ({ title: `الفكرة ${index + 1}`, text, example: 'راجع المثال المرتبط بهذه الفكرة في ملف المحاضرة.' })),
+      important: lesson.examHint,
+      summary: [{ label: 'الخلاصة', text: lesson.summary, tone: 'mint' }],
+      mindmap: { center: lesson.title, branches: [{ title: 'المفاهيم', items: lesson.terms.map((term) => term.term) }] }
+    };
+    const summaryHtml = teaching.summary.map((tile) => `<article class="summary-tile tone-${escapeHtml(tile.tone)}"><span>${escapeHtml(tile.label)}</span><strong>${escapeHtml(tile.text)}</strong></article>`).join('');
+    const mindmapHtml = teaching.mindmap.branches.map((branch) => `<article class="mindmap-branch"><strong class="mindmap-node">${escapeHtml(branch.title)}</strong><div class="mindmap-children">${branch.items.map((item) => `<span>${escapeHtml(item)}</span>`).join('')}</div></article>`).join('');
+    return `<button class="back-button" type="button" data-action="back-lessons">→ العودة إلى قسم التدريس</button>
+      <div class="lesson-detail-head"><span class="lesson-number">${lesson.number}</span><span><span class="eyebrow">شرح مبسّط · ${escapeHtml(lesson.pages)}</span><h1 class="lesson-detail-title">${escapeHtml(lesson.title)}</h1><p class="lesson-detail-short">${escapeHtml(lesson.short)}</p></span></div>
+      <section class="teaching-intro"><span class="teaching-intro-icon" aria-hidden="true">✦</span><div><strong>الفكرة العامة للمحاضرة</strong><p>${escapeHtml(teaching.opening)}</p></div></section>
+      <section class="teaching-section"><div class="section-heading"><div><span class="eyebrow">نتعلّمها خطوة بخطوة</span><h2>شرح المحاضرة مع أمثلة</h2><p>اقرأ الفكرة، ثم جرّب شرح المثال لنفسك بكلماتك.</p></div></div>
+        <div class="teaching-steps">${teaching.steps.map((step, index) => `<article class="teaching-step"><div class="teaching-step-head"><span class="teaching-step-number">${digits(index + 1)}</span><h3>${escapeHtml(step.title)}</h3></div><p>${escapeHtml(step.text)}</p><div class="teaching-example"><span>مثال يوضّح الفكرة</span><p>${escapeHtml(step.example)}</p></div></article>`).join('')}</div>
+      </section>
+      <div class="teaching-support-grid">
+        <section class="panel"><div class="section-heading"><div><span class="eyebrow">مصطلحات أساسية</span><h2>تأكد أنك تميّز بينها</h2></div></div><div class="term-list">${lesson.terms.map((term) => `<div class="term-item"><strong>${escapeHtml(term.term)}</strong><p>${escapeHtml(term.meaning)}</p></div>`).join('')}</div></section>
+        <aside class="teaching-callout"><span class="callout-mark" aria-hidden="true">!</span><div><strong>معلومة مهمة</strong><p>${escapeHtml(teaching.important)}</p><div class="callout-exam"><b>صلة بالامتحان:</b> ${escapeHtml(lesson.examHint)}</div></div></aside>
+      </div>
+      <section class="panel teaching-source-panel"><div><span class="eyebrow">المصدر الأصلي</span><h2>ارجع إلى صفحات المحاضرة</h2><p class="page-lead">أرقام الصفحات أدناه تشير إلى ملف PDF المرفوع.</p></div><div class="source-line"><span>${escapeHtml(lesson.pages)}</span>${pdfLink(lesson.pdf, 'افتح ملف المحاضرة')}</div></section>
+      <section class="teaching-recap"><div class="section-heading"><div><span class="eyebrow">قبل أن تنتقل للمحاضرة التالية</span><h2>ملخص ملوّن وخريطة ذهنية</h2><p>استرجع الكلمات المفتاحية، ثم حاول إعادة رسم الخريطة من الذاكرة.</p></div></div>
+        <div class="colored-summary">${summaryHtml}</div>
+        <div class="mindmap-card"><span class="mindmap-caption">خريطة ذهنية صغيرة</span><div class="mindmap-center">${escapeHtml(teaching.mindmap.center)}</div><div class="mindmap-branches">${mindmapHtml}</div></div>
+      </section>
+      <section class="panel next-steps-panel"><div class="section-heading"><div><span class="eyebrow">تثبيت التعلّم</span><h2>ماذا تفعل الآن؟</h2></div><span class="pill">${completed ? 'تمت مراجعتها' : 'اختر خطوة'}</span></div><div class="detail-actions"><button class="btn btn-green" type="button" data-start-cards="lesson" data-lesson-id="${lesson.id}">راجع بطاقات المحور</button><button class="btn btn-outline" type="button" data-start-quiz="${lesson.id}">اختبر فهمك</button><button class="btn ${completed ? 'btn-soft' : 'btn-outline'}" type="button" data-action="toggle-complete" data-lesson-id="${lesson.id}">${completed ? '✓ أزل علامة الإكمال' : 'علّم المحور كمكتمل'}</button></div></section>`;
   }
 
   function renderCards() {
@@ -316,7 +327,9 @@
     if (!needle) return `<div class="page-heading"><div><span class="eyebrow">بحث في محتوى المقرر</span><h1 class="page-title">ابحث عن مفهوم</h1><p class="page-lead">اكتب كلمة أو عبارة في مربع البحث أعلى الصفحة.</p></div></div><div class="empty-state">جرّب مثلًا: <strong>الميزانية · الجبر المعنوي · القرض الخارجي</strong></div>`;
     const results = [];
     DATA.lessons.forEach((lesson) => {
-      const corpus = [lesson.title, lesson.short, lesson.summary, lesson.points.join(' '), lesson.terms.map((term) => `${term.term} ${term.meaning}`).join(' ')].join(' ');
+      const teaching = (window.TEACHING_DATA || {})[lesson.id];
+      const teachingText = teaching ? [teaching.opening, teaching.important, teaching.steps.map((step) => `${step.title} ${step.text} ${step.example}`).join(' '), teaching.summary.map((tile) => `${tile.label} ${tile.text}`).join(' ')].join(' ') : '';
+      const corpus = [lesson.title, lesson.short, lesson.summary, lesson.points.join(' '), lesson.terms.map((term) => `${term.term} ${term.meaning}`).join(' '), teachingText].join(' ');
       if (normalizeText(corpus).includes(needle)) {
         const termMatch = lesson.terms.find((term) => normalizeText(`${term.term} ${term.meaning}`).includes(needle));
         results.push({ title: termMatch ? termMatch.term : lesson.title, subtitle: termMatch ? termMatch.meaning : lesson.short, kind: 'محاضرة', action: 'lesson', id: lesson.id });
@@ -327,7 +340,7 @@
       if (normalizeText(corpus).includes(needle)) results.push({ title: exam.title, subtitle: exam.shape, kind: 'نموذج امتحان', action: 'exam', id: exam.id });
     });
     const safeQuery = escapeHtml(query);
-    return `<div class="page-heading"><div><span class="eyebrow">نتائج البحث</span><h1 class="page-title">بحث عن «${safeQuery}»</h1><p class="page-lead">${digits(results.length)} نتيجة في الملخصات والتعاريف ونماذج الإجابة.</p></div></div>
+    return `<div class="page-heading"><div><span class="eyebrow">نتائج البحث</span><h1 class="page-title">بحث عن «${safeQuery}»</h1><p class="page-lead">${digits(results.length)} نتيجة في الشروح والأمثلة والتعاريف ونماذج الإجابة.</p></div></div>
       ${results.length ? `<div class="search-results">${results.map((result) => `<button class="search-result" type="button" ${result.action === 'lesson' ? `data-open-lesson="${result.id}"` : `data-open-exam="${result.id}"`}><span><strong>${escapeHtml(result.title)}</strong><small>${escapeHtml(result.subtitle)}</small></span><span class="search-kind">${escapeHtml(result.kind)}　←</span></button>`).join('')}</div>` : `<div class="empty-state"><strong>لم نعثر على نتيجة بهذه العبارة.</strong>جرّب كلمة أقصر أو مرادفًا من عنوان المحاضرة.</div>`}`;
   }
 
